@@ -16,7 +16,6 @@ public:
   }
 
   void init() {
-    cur_chosen_cell = cord(row - 1, col - 1);
     magnets = {{0, 0}, {row - 1, col - 1}};
     grid[0][0] = node('+', RED);
     grid[row - 1][col - 1] = node('-', BLUE);
@@ -30,31 +29,6 @@ public:
     grid[1][2] = grid[3][2] = grid[2][1] = grid[2][3] = node('O', GREEN);
 
     balls_count = 1 + 4;
-    // generate_random_grid();
-  }
-
-  void generate_random_grid() {
-    int gray = rand(2, 4);
-    int holes_cnt = rand(gray + 2, 6);
-
-    set<pair<int, int>> cords;
-    for (int i = 0; i < row; ++i) {
-      for (int j = 0; j < col; ++j) {
-        if (find(magnets.begin(), magnets.end(), pair(i, j)) != magnets.end())
-          continue;
-        cords.emplace(i, j);
-      }
-    }
-
-    // for (int i = 0; i < holes_cnt; ++i) {
-    //   auto [x, y] = get_random(cords);
-    //   grid[x][y] = node('.', 1);
-    //   holes.emplace_back(x, y);
-    // }
-    // for (int i = 0; i < gray; ++i) {
-    //   auto [x, y] = get_random(cords);
-    //   grid[x][y] = node('O', 3);
-    // }
   }
 
   bool inside(const int &x, const int &y) {
@@ -122,9 +96,6 @@ public:
 
   vector<vector<node>> grid;
   set<pair<int, int>> holes;
-
-  cord cur_chosen_cell;
-  cord cc_s_cur_chosen_cell;
 
   vector<pair<int, int>> magnets;
 

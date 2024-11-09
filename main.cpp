@@ -17,7 +17,6 @@ int main() {
   int r = 5;
   int c = 5;
   Solve solution = Solve(r, c);
-  // solution.print(solution.state.back());
   drawer::print(solution.state, r, c);
   solution.dfs(Grid(r, c));
   drawer::print(solution.state, r, c);
