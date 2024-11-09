@@ -1,0 +1,135 @@
+#ifndef GRID_H
+#define GRID_H
+
+#include <bits/stdc++.h>
+#include <ncurses.h>
+#include <utils.h>
+
+using namespace std;
+
+class Grid {
+public:
+  Grid() {}
+  Grid(int row, int col) : row(row), col(col) {
+    grid = vector<vector<node>>(row, vector<node>(col, node(' ', WHITE)));
+    init();
+  }
+
+  void init() {
+    cur_chosen_cell = cord(row - 1, col - 1);
+    magnets = {{0, 0}, {row - 1, col - 1}};
+    grid[0][0] = node('+', RED);
+    grid[row - 1][col - 1] = node('-', BLUE);
+
+    holes = {{0, 2}, {4, 2}, {2, 0}, {2, 4}, {2, 2}};
+    for (auto &[x, y] : holes) {
+      grid[x][y] = node('.', WHITE);
+    }
+
+    // iron balls
+    grid[1][2] = grid[3][2] = grid[2][1] = grid[2][3] = node('O', GREEN);
+
+    balls_count = 1 + 4;
+    // generate_random_grid();
+  }
+
+  void generate_random_grid() {
+    int gray = rand(2, 4);
+    int holes_cnt = rand(gray + 2, 6);
+
+    set<pair<int, int>> cords;
+    for (int i = 0; i < row; ++i) {
+      for (int j = 0; j < col; ++j) {
+        if (find(magnets.begin(), magnets.end(), pair(i, j)) != magnets.end())
+          continue;
+        cords.emplace(i, j);
+      }
+    }
+
+    // for (int i = 0; i < holes_cnt; ++i) {
+    //   auto [x, y] = get_random(cords);
+    //   grid[x][y] = node('.', 1);
+    //   holes.emplace_back(x, y);
+    // }
+    // for (int i = 0; i < gray; ++i) {
+    //   auto [x, y] = get_random(cords);
+    //   grid[x][y] = node('O', 3);
+    // }
+  }
+
+  bool inside(const int &x, const int &y) {
+    return x >= 0 && x < row && y >= 0 && y < col;
+  }
+
+  int sign(const int &num) { return num > 0 ? 1 : -1; }
+
+  void analyse_borders(int x, int y) {
+    for (int i = 0; i < dx.size(); ++i) {
+      int xx = x + dx[i];
+      int yy = y + dy[i];
+      if (inside(xx, yy) && !is_empty(xx, yy)) {
+        int co = (grid[x][y].ch == '+' ? -1 : 1);
+        int nx = xx + co * 1 * (dx[i] + sign(dx[i])) / 2;
+        int ny = yy + co * 1 * (dy[i] + sign(dy[i])) / 2;
+        if (inside(nx, ny) && is_empty(nx, ny)) {
+          if (auto m = find(magnets.begin(), magnets.end(), pair(xx, yy));
+              m != magnets.end()) {
+            *m = pair(nx, ny);
+          }
+          grid[nx][ny] = grid[xx][yy];
+          grid[xx][yy] = node(' ', WHITE);
+        }
+      }
+    }
+  }
+
+  void move(const int &x, const int &y, const int &xx, const int &yy) {
+    auto cur = grid[x][y];
+    grid[x][y] = node(' ', WHITE);
+    if (auto m = find(magnets.begin(), magnets.end(), pair(x, y));
+        m != magnets.end()) {
+      *m = pair(xx, yy);
+    }
+    grid[xx][yy] = cur;
+    analyse_borders(xx, yy);
+  }
+
+  bool is_solved() {
+    int cnt = 0;
+    for (auto &[x, y] : holes)
+      cnt += !is_empty(x, y);
+    return cnt == balls_count;
+  }
+
+  bool is_empty(const int &x, const int &y) {
+    return grid[x][y].ch == ' ' || grid[x][y].ch == '.';
+  }
+
+  string to_string() {
+    string res;
+    for (auto &x : grid) {
+      for (auto &y : x) {
+        res += (y.ch == ' ' || y.ch == '.' ? '.' : y.ch);
+      }
+    }
+    return res;
+  }
+
+  int row;
+  int col;
+
+  int balls_count = 0;
+
+  vector<vector<node>> grid;
+  set<pair<int, int>> holes;
+
+  cord cur_chosen_cell;
+  cord cc_s_cur_chosen_cell;
+
+  vector<pair<int, int>> magnets;
+
+  vector<int> dx = {+1, -1, 0, 0, +2, -2, 0, 0};
+  vector<int> dy = {0, 0, +1, -1, 0, 0, +2, -2};
+};
+
+#endif
