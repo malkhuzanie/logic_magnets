@@ -1,3 +1,6 @@
+* General Information
+This project is developed by: Mohammed Alkhuzanie, from section 3.
+
 * Building the project
 
 #+begin_src bash
@@ -11,6 +14,5 @@ To run the game, execute "magnets" binary
 #+begin_src bash
   ./magnets
 #+end_src
-
 
 
