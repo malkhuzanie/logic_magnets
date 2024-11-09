@@ -1,0 +1,6 @@
+* Building the project
+
+#+begin_src bash
+  mkdir build; cd build
+
+#+end_src

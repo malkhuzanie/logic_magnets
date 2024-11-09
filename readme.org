@@ -1,0 +1,16 @@
+* Building the project
+
+#+begin_src bash
+  mkdir build; cd build
+  cmake ../
+  make
+#+end_src
+
+To run the game, execute "magnets" binary
+
+#+begin_src bash
+  ./magnets
+#+end_src
+
+
+
