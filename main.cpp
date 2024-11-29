@@ -1,4 +1,5 @@
 #include <dfs.h>
+#include <dijkstra.h>
 #include <drawer.h>
 #include <iostream>
 
@@ -13,13 +14,13 @@ int main() {
   init_ncurses();
   draw_outer_box();
 
-  cout << "starting...\n";
   int r = 5;
   int c = 5;
-  Solve solution = Solve(r, c);
-  drawer::print(solution.state, r, c);
-  solution.dfs(Grid(r, c));
-  drawer::print(solution.state, r, c);
+  vector<Grid> solution;
+  auto initial_state = Grid(r, c);
+  drawer::print(solution, r, c);
+  algo::dijkstra(initial_state, solution);
+  drawer::print(solution, r, c);
 
   int ch;
   int idx = 0;
@@ -31,12 +32,12 @@ int main() {
       }
       break;
     case KEY_RIGHT:
-      if (idx + 2 < solution.state.size()) {
+      if (idx + 2 < solution.size()) {
         idx += 2;
       }
       break;
     }
-    drawer::print(solution.state, r, c, idx);
+    drawer::print(solution, r, c, idx);
   }
 
   endwin();

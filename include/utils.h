@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <bits/stdc++.h>
+using namespace std;
+
 int rand(const int &low, const int &high) {
   std::random_device r;
   static std::default_random_engine eng{r()};
@@ -34,6 +37,16 @@ struct node {
 
 bool operator==(const cord &lhs, const cord &rhs) {
   return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+void print(vector<vector<node>> &adj) {
+  cout << "---------------------------------------\n";
+  for (auto &x : adj) {
+    for (auto &y : x) {
+      cout << y.ch << ' ';
+    }
+    cout << '\n';
+  }
 }
 
 #endif

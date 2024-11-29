@@ -10,14 +10,17 @@ using namespace std;
 class Grid {
 public:
   Grid() {}
+
+  Grid(vector<vector<char>> &adj) : adj(adj) {}
+
   Grid(int row, int col) : row(row), col(col) {
     grid = vector<vector<node>>(row, vector<node>(col, node(' ', WHITE)));
     init();
   }
 
   void init() {
-    magnets = {{0, 0}, {row - 1, col - 1}};
-    grid[0][0] = node('+', RED);
+    magnets = {{row - 1, col - 1}};
+    // grid[0][0] = node('+', RED);
     grid[row - 1][col - 1] = node('-', BLUE);
 
     holes = {{0, 2}, {4, 2}, {2, 0}, {2, 4}, {2, 2}};
@@ -60,12 +63,17 @@ public:
   void move(const int &x, const int &y, const int &xx, const int &yy) {
     auto cur = grid[x][y];
     grid[x][y] = node(' ', WHITE);
-    if (auto m = find(magnets.begin(), magnets.end(), pair(x, y));
-        m != magnets.end()) {
-      *m = pair(xx, yy);
-    }
+    auto m = find(magnets.begin(), magnets.end(), pair(x, y));
+    *m = pair(xx, yy);
     grid[xx][yy] = cur;
     analyse_borders(xx, yy);
+  }
+
+  int filled() {
+    int cnt = 0;
+    for (auto &[x, y] : holes)
+      cnt += !is_empty(x, y);
+    return cnt;
   }
 
   bool is_solved() {
@@ -94,6 +102,7 @@ public:
 
   int balls_count = 0;
 
+  vector<vector<char>> adj;
   vector<vector<node>> grid;
   set<pair<int, int>> holes;
 
